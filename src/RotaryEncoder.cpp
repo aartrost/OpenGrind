@@ -11,7 +11,7 @@ RotaryEncoder::RotaryEncoder() {
     button->begin();
 }
 
-bool RotaryEncoder::wasTurnedLeft() {
+bool RotaryEncoder::wasTurnedRight() {
     if (encoder->read() < 0 - ENC_TOL) {
         encoder->write(0);
         return true;
@@ -19,7 +19,7 @@ bool RotaryEncoder::wasTurnedLeft() {
     return false;
 }
 
-bool RotaryEncoder::wasTurnedRight() {
+bool RotaryEncoder::wasTurnedLeft() {
     if (encoder->read() > 0 + ENC_TOL) {
         encoder->write(0);
         return true;
