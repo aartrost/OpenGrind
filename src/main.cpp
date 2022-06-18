@@ -15,6 +15,8 @@ Grinder *grinder;
 // State Machine
 enum States {NORMAL, SET_DOSE, GRINDING, STATS};
 uint8_t state = NORMAL;
+double grindDuration;
+double grindEnd;
 
 void setup() {
   Serial.begin(9600);
@@ -67,12 +69,12 @@ void loop() {
     case SET_DOSE:
 
       if (encoder->wasTurnedLeft()) {
-        dosage->singleDoseTime -= dosage->singleDoseSelected ? 0.1 : 0.0;
-        dosage->doubleDoseTime -= dosage->singleDoseSelected == false ? 0.1 : 0.0;
+        dosage->singleDoseTime -= dosage->singleDoseSelected ? 0.05 : 0.0;
+        dosage->doubleDoseTime -= dosage->singleDoseSelected == false ? 0.05 : 0.0;
         dosage->writeToEEPROM();
       } else if (encoder->wasTurnedRight()) {
-        dosage->singleDoseTime += dosage->singleDoseSelected ? 0.1 : 0.0;
-        dosage->doubleDoseTime += dosage->singleDoseSelected == false ? 0.1 : 0.0;
+        dosage->singleDoseTime += dosage->singleDoseSelected ? 0.05 : 0.0;
+        dosage->doubleDoseTime += dosage->singleDoseSelected == false ? 0.05 : 0.0;
         dosage->writeToEEPROM();
       }
 
@@ -85,12 +87,30 @@ void loop() {
       break;
 
     case GRINDING:
+      
       grinder->increaseShotCounter(dosage->singleDoseSelected);
 
-      grinder->on(dosage->singleDoseSelected ? dosage->singleDoseTime : dosage->doubleDoseTime);
-      while (millis() < grinder->getTargetTime()) {
-        display->printTime((grinder->getTargetTime() - millis()) / 1000.0);
+      // get grind time
+      grindDuration = dosage->singleDoseSelected ? dosage->singleDoseTime : dosage->doubleDoseTime;
+
+      // turn grinder on
+      grinder->on();
+
+      // wait for the motor to start spinning
+      while(!grinder->isGrinding()){
+        //display->printText("Starting");
+        //display->clear();
+        display->printTime(grindDuration);
       }
+
+      // calculate end time
+      grindEnd = millis() + (grindDuration * 1000);
+
+      // start timer
+      while (millis() < grindEnd) {
+          display->printTime((grindEnd - millis()) / 1000.0);
+      }
+
       grinder->off();
 
       display->printTime(0.0);

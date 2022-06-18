@@ -9,11 +9,11 @@ class Grinder
     public:
         Grinder();
         bool startBtnPressed();
+        bool isGrinding();
         int getSingleDoseStats();
         int getDoubleDoseStats();
         void increaseShotCounter(bool isSingleDose);
         void resetStats();
-        unsigned long getTargetTime();
-        void on(double targetTime);
+        void on();
         void off();
 };

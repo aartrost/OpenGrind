@@ -4,7 +4,12 @@
 #include <EEPROM.h>
 
 Grinder::Grinder() {
+    pinMode(MOTOR_START, INPUT);
+
     pinMode(SSR, OUTPUT);
+    // set default state to off
+    this->off();
+
     pinMode(START_BTN, INPUT_PULLUP);
 }
 
@@ -38,15 +43,14 @@ void Grinder::resetStats() {
     }
 }
 
-unsigned long Grinder::getTargetTime() {
-    return targetTime;
+void Grinder::on() {
+    digitalWrite(SSR, LOW);
 }
 
-void Grinder::on(double targetTime) {
-    this->targetTime = millis() + targetTime * 1000;
-    digitalWrite(SSR, HIGH);
+bool Grinder::isGrinding() {
+    return digitalRead(MOTOR_START);
 }
 
 void Grinder::off() {
-    digitalWrite(SSR, LOW);
+    digitalWrite(SSR, HIGH);
 }
