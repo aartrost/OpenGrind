@@ -3,6 +3,8 @@
 #include <Encoder.h>
 #include <JC_Button.h>
 
+bool clicked = true;
+
 RotaryEncoder::RotaryEncoder() {
     button = new Button(ENC_SW, 100, true, true);
     encoder = new Encoder(ENC_CLK, ENC_DT);
@@ -30,6 +32,23 @@ bool RotaryEncoder::isPressed() {
     if (button->isPressed()) {
         return true;
     }
+    return false;
+}
+
+bool RotaryEncoder::isSingleClicked() {
+    button->read();
+    
+    if (button->isPressed() && clicked == false) {
+        // run this only once
+        clicked = true;
+        return true;
+    }
+
+    if (button->isReleased() && clicked == true) {
+        // reset clicked on button up
+        clicked = false;
+    }
+
     return false;
 }
 
