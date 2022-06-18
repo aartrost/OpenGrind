@@ -31,7 +31,7 @@ void loop() {
   {
     case NORMAL:
       // set new dose
-      if (encoder->wasPressed()) {
+      if (encoder->isSingleClicked()) {
         state = SET_DOSE;
         break;
       }
@@ -65,18 +65,23 @@ void loop() {
       break;
 
     case SET_DOSE:
+
       if (encoder->wasTurnedLeft()) {
         dosage->singleDoseTime -= dosage->singleDoseSelected ? 0.1 : 0.0;
         dosage->doubleDoseTime -= dosage->singleDoseSelected == false ? 0.1 : 0.0;
+        dosage->writeToEEPROM();
       } else if (encoder->wasTurnedRight()) {
         dosage->singleDoseTime += dosage->singleDoseSelected ? 0.1 : 0.0;
         dosage->doubleDoseTime += dosage->singleDoseSelected == false ? 0.1 : 0.0;
+        dosage->writeToEEPROM();
       }
 
-      dosage->writeToEEPROM();
       display->printTime(dosage->singleDoseSelected ? dosage->singleDoseTime : dosage->doubleDoseTime);
-      
-      state = NORMAL;
+
+      if (encoder->isSingleClicked()) {
+        state = NORMAL;
+      }
+
       break;
 
     case GRINDING:
