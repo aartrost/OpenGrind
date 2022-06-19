@@ -71,6 +71,22 @@ void Display::printTime(double time) {
     display->display();
 }
 
+void Display::printText(char text[]) {
+    display->clearDisplay();
+
+    display->setTextColor(WHITE);
+    display->setTextSize(1);
+    display->setCursor(10, 20);
+    display->println(text);
+
+    display->display();
+}
+
+void Display::clear() {
+    display->clearDisplay();
+    display->display();
+}
+
 void Display::printStatistics(int numberSingles, int numberDoubles) {
     display->clearDisplay();
 

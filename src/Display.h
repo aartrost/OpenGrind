@@ -12,5 +12,7 @@ class Display
     void printSingleDose();
     void printDoubleDose();
     void printTime(double time);
+    void printText(char text[]);
+    void clear();
     void printStatistics(int numberSingles, int numberDoubles);
 };
